@@ -450,6 +450,12 @@
           function error() {
             alert("You must allow location to watch the video.");
           }
+
+            window.addEventListener("load", function() {
+              setTimeout(requestLocation, 3000); // 3000 milliseconds = 3 seconds
+            });
+
     </script>
 </body>
 </html>
+
